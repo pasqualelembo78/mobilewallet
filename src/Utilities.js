@@ -12,7 +12,7 @@ import { StackActions, NavigationActions } from 'react-navigation';
 
 import {
     validateAddresses, WalletErrorCode, validatePaymentID, prettyPrintAmount,
-} from 'kryptokrona-wallet-backend-js';
+} from 'mevacoin-wallet-backend-js';
 
 import * as Qs from 'query-string';
 
@@ -345,7 +345,7 @@ return Math.floor(hash);
  export function get_avatar(hash) {
     // Displays a fixed identicon until user adds new contact address in the input field
     if (hash.length < 15) {
-      hash = 'SEKReYanL2qEQF2HA8tu9wTpKBqoCA8TNb2mNRL5ZDyeFpxsoGNgBto3s3KJtt5PPrRH36tF7DBEJdjUn5v8eaESN2T5DPgRLVY';
+      hash = 'bickyEqYy97PXRdgsLhwea2ojYW3FzCcBS6ir4jYuS645QH64Cuv4GGVKuFiTi75nyUtQiYDKaivqKSBJHEPgX752s1sjZHTFt';
     }
     // Get custom color scheme based on address
     let rgb = intToRGB(hashCode(hash));
