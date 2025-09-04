@@ -15,12 +15,12 @@ const Config = new function() {
     /**
      * If you can't figure this one out, I don't have high hopes
      */
-    this.coinName = 'kryptokrona';
+    this.coinName = 'mevacoin';
 
     /**
      * Prefix for URI encoded addresses
      */
-    this.uriPrefix = 'xkr://';
+    this.uriPrefix = 'mvc://';
 
     /**
      * How often to save the wallet, in milliseconds
@@ -37,7 +37,7 @@ const Config = new function() {
      * The address prefix your coin uses - you can find this in CryptoNoteConfig.h.
      * In TurtleCoin, this converts to TRTL
      */
-    this.addressPrefix = 2239254;
+    this.addressPrefix = 18511;
 
     /**
      * Request timeout for daemon operations in milliseconds
@@ -47,7 +47,7 @@ const Config = new function() {
     /**
      * The block time of your coin, in seconds
      */
-    this.blockTargetTime = 90;
+    this.blockTargetTime = 180;
 
     /**
      * How often to process blocks, in millseconds
@@ -74,7 +74,7 @@ const Config = new function() {
     /**
      * Your coins 'ticker', generally used to refer to the coin, i.e. 123 TRTL
      */
-    this.ticker = 'XKR';
+    this.ticker = 'MVC';
 
     /**
      * Most people haven't mined any blocks, so lets not waste time scanning
@@ -173,7 +173,7 @@ const Config = new function() {
     /**
      * Address to send dev fee to
      */
-    this.devFeeAddress = 'SEKReZ4pekEQHXy6iNMfy5EpurwrVNKgJHuokcyPbdTgQ7UwPanewoC1PmoGDUiYrDB1yLemoLEjTR5yueGXN67TKFXYYhtRgBM';
+    this.devFeeAddress = 'bickyEqYy97PXRdgsLhwea2ojYW3FzCcBS6ir4jYuS645QH64Cuv4GGVKuFiTi75nyUtQiYDKaivqKSBJHEPgX752s1sjZHTFt';
 
     /**
      * Base url for price API
@@ -182,30 +182,30 @@ const Config = new function() {
      * you just set this to an empty string. If you have another API you want
      * it to support, you're going to have to modify the code in Currency.js.
      */
-    this.priceApiLink = 'https://api.coingecko.com/api/v3/simple/price?ids=kryptokrona&vs_currencies=usd,sek,btc,eth,ltc,aud,cad,cny,chf,eur,gbp,inr,jpy,mxn,nzd,rub,nok,dkk';
+    this.priceApiLink = 'https://api.coingecko.com/api/v3/simple/price?ids=Mevacoin&vs_currencies=usd,sek,btc,eth,ltc,aud,cad,cny,chf,eur,gbp,inr,jpy,mxn,nzd,rub,nok,dkk';
 
     /**
      * Default daemon to use. Can either be a BlockchainCacheApi(baseURL, SSL),
      * or a ConventionalDaemon(url, port).
      */
-    this.defaultDaemon = new Daemon('privacymine.net', 11898);
+    this.defaultDaemon = new Daemon(195.231.65.38', 17081);
 
     /**
      * A link to where a bug can be reported for your wallet. Please update
      * this if you are forking, so we don't get reported bugs for your wallet...
      *
      */
-    this.repoLink = 'https://github.com/kryptokrona/kryptokrona-mobile-wallet/issues';
+    this.repoLink = 'https://github.com/pasqualelembo78/mevacoin-mobile-wallet/issues';
 
     /**
      * This only controls the name in the settings screen.
      */
-    this.appName = 'Kryptokrona Mobile Wallet';
+    this.appName = 'Mevacoin Mobile Wallet';
 
     /**
      * Slogan phrase during wallet CreateScreen
      */
-    this.sloganCreateScreen = 'A nordic cryptocurrency';
+    this.sloganCreateScreen = 'mevacoin';
 
     /**
      * Displayed in the settings screen
@@ -215,8 +215,8 @@ const Config = new function() {
     /**
      * Base URL for us to chuck a hash on the end, and find a transaction
      */
-    this.explorerBaseURL = 'https://explorer.kryptokrona.se/?hash=';
-
+    this.explorerBaseURL = 'https://explorer.mevacoin.it/?hash=';
+    
     /**
      * A link to your app on the Apple app store. Currently blank because we
      * haven't released for iOS yet...
@@ -226,13 +226,13 @@ const Config = new function() {
     /**
      * A link to your app on the google play store
      */
-    this.googlePlayLink = 'https://play.google.com/store/apps/details?id=com.xkr';
+    this.googlePlayLink = 'https://play.google.com/store/apps/details?id=com.mvc';
 
     /**
      * A url to fetch node info from. Should follow the turtlepay format
      * detailed here: https://docs.turtlepay.io/blockapi/
      */
-    this.nodeListURL = 'https://raw.githubusercontent.com/kryptokrona/kryptokrona-public-nodes/main/nodes.json';
+    this.nodeListURL = 'https://raw.githubusercontent.com/pasqualelembo78/mevacoin/refs/heads/master/nodes.json';
 };
 
 module.exports = Config;
