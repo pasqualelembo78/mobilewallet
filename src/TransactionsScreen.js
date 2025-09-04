@@ -11,7 +11,7 @@ import TextTicker from 'react-native-text-ticker';
 import { Header } from 'react-native-elements';
 import { View, Text, FlatList, Button, Linking, ScrollView, Image } from 'react-native';
 
-import { prettyPrintAmount } from 'kryptokrona-wallet-backend-js';
+import { prettyPrintAmount } from 'mevacoin-wallet-backend-js';
 import Config from './Config';
 import ListItem from './ListItem';
 import List from './ListContainer';

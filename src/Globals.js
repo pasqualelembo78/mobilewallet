@@ -6,7 +6,7 @@ const request = require('request-promise-native');
 
 import * as _ from 'lodash';
 
-import { Daemon } from 'kryptokrona-wallet-backend-js';
+import { Daemon } from 'mevacoin-wallet-backend-js';
 
 import { Alert } from 'react-native';
 

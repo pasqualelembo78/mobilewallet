@@ -5,7 +5,7 @@
 'use strict';
 
 import { NativeModules } from 'react-native';
-import { TransactionInput } from 'kryptokrona-wallet-backend-js';
+import { TransactionInput } from 'mevacoin-wallet-backend-js';
 
 export async function generateKeyImage(
     publicEphemeral,

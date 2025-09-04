@@ -13,7 +13,7 @@ import {
 import {
     importWalletFromSeed, BlockchainCacheApi, WalletBackend, WalletError,
     isValidMnemonic, isValidMnemonicWord,
-} from 'kryptokrona-wallet-backend-js';
+} from 'mevacoin-wallet-backend-js';
 
 import Config from './Config';
 

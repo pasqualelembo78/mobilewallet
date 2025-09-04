@@ -26,7 +26,7 @@ import {
 
 import NetInfo from "@react-native-community/netinfo";
 
-import { prettyPrintAmount, Daemon, WalletErrorCode } from 'kryptokrona-wallet-backend-js';
+import { prettyPrintAmount, Daemon, WalletErrorCode } from 'mevacoin-wallet-backend-js';
 
 import Config from './Config';
 import ListItem from './ListItem';

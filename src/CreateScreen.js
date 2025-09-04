@@ -8,7 +8,7 @@ import {
     View, Text, Button, Image,
 } from 'react-native';
 
-import { WalletBackend } from 'kryptokrona-wallet-backend-js';
+import { WalletBackend } from 'mevacoin-wallet-backend-js';
 
 import Config from './Config';
 
@@ -43,7 +43,7 @@ export class WalletOptionScreen extends React.Component {
                         color: this.props.screenProps.theme.primaryColour,
                         textAlign: 'center'
                     }}>
-                        kryptokrona {'\n'}
+                        mevacoin {'\n'}
                     </Text>
                     <Text style={{
                         fontSize: 20,

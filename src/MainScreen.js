@@ -26,7 +26,7 @@ import CustomIcon from "./CustomIcon";
 
 import NetInfo from "@react-native-community/netinfo";
 
-import { prettyPrintAmount, LogLevel } from 'kryptokrona-wallet-backend-js';
+import { prettyPrintAmount, LogLevel } from 'mevacoin-wallet-backend-js';
 
 import Config from './Config';
 

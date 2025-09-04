@@ -4,7 +4,7 @@
 
 ### Initial Setup
 
-* `cd kryptokrona-mobile-wallet`
+* `cd mevacoin-mobile-wallet`
 * `yarn install`
 
 ### Running

@@ -4,7 +4,7 @@
 
 import { Platform } from 'react-native';
 
-import { MixinLimit, MixinLimits, Daemon } from 'kryptokrona-wallet-backend-js';
+import { MixinLimit, MixinLimits, Daemon } from 'mevacoin-wallet-backend-js';
 
 import {
     derivePublicKey, generateKeyDerivation, generateRingSignatures,

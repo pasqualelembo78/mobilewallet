@@ -4,7 +4,7 @@
 
 import React from 'react';
 
-import { WalletBackend } from 'kryptokrona-wallet-backend-js';
+import { WalletBackend } from 'mevacoin-wallet-backend-js';
 
 import { Animated, View, Alert } from 'react-native';
 

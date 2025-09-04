@@ -12,7 +12,7 @@ import {
 
 import {
     validateAddresses, WalletErrorCode, validatePaymentID,
-} from 'kryptokrona-wallet-backend-js';
+} from 'mevacoin-wallet-backend-js';
 
 import { Button as RNEButton, Alert } from 'react-native';
 

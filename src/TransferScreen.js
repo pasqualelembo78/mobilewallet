@@ -19,7 +19,7 @@ import { HeaderBackButton, StackActions } from 'react-navigation';
 
 import {
     validateAddresses, WalletErrorCode, validatePaymentID, prettyPrintAmount,
-} from 'kryptokrona-wallet-backend-js';
+} from 'mevacoin-wallet-backend-js';
 
 import {
     View, Text, TextInput, TouchableOpacity, FlatList, Platform,
