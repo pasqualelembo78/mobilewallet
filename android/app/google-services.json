@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "812246633897",
+    "project_id": "mobil-4b17c",
+    "storage_bucket": "mobil-4b17c.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:812246633897:android:b55b08584a2372f1ee08b8",
+        "android_client_info": {
+          "package_name": "com.tonchan"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAbzguGg_BG1p67E4O6q8KNlH5DoX_7mKQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

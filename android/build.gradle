@@ -1,0 +1,147 @@
+// Top-level build file where you can add configuration options common to all sub-projects/modules.
+// Versione aggiornata: forza dependency compatibili con RN 0.60.x e evita lifecycle-runtime-android 2.8.x
+
+buildscript {
+    ext {
+        buildToolsVersion = "29.0.2"
+        minSdkVersion = 21
+        compileSdkVersion = 29
+        targetSdkVersion = 29
+        supportLibVersion = "28.0.0"
+    }
+
+    repositories {
+        google()
+        mavenCentral()
+        jcenter() // alcune librerie legacy ancora lo richiedono
+        maven { url "https://jitpack.io" }
+        mavenLocal()
+    }
+
+    dependencies {
+        classpath("com.android.tools.build:gradle:3.4.1")
+        classpath("com.android.support:support-compat:28.0.0-alpha1")
+        classpath("com.google.gms:google-services:4.2.0")
+    }
+}
+
+allprojects {
+    repositories {
+        // repository locali usati da moduli React Native nativi
+        maven { url "$rootDir/../node_modules/react-native-background-fetch/android/libs" }
+        maven { url "$rootDir/../node_modules/react-native/android" }
+        maven { url "$rootDir/../node_modules/jsc-android/dist" }
+
+        google()
+        mavenCentral()
+        jcenter()
+        maven { url "https://jitpack.io" }
+        mavenLocal()
+    }
+
+    // Configurazione comune Android per i subprojects
+    subprojects {
+        afterEvaluate { project ->
+            if (project.hasProperty("android")) {
+                android {
+                    compileSdkVersion rootProject.ext.compileSdkVersion
+                    buildToolsVersion rootProject.ext.buildToolsVersion
+                }
+            }
+        }
+
+        // Applica una resolution strategy anche ad ogni subproject (più forte)
+        project.configurations.all { cfg ->
+            cfg.resolutionStrategy { rs ->
+                // 1) Normalizza tutte le lifecycle al gruppo 2.2.0
+                rs.eachDependency { details ->
+                    if (details.requested.group == 'androidx.lifecycle') {
+                        // Se qualcuno richiede runtime-android (introdotto nelle versioni recenti),
+                        // reindirizziamo verso lifecycle-runtime (compatibile) oppure forziamo 2.2.0
+                        if (details.requested.name.contains('runtime-android')) {
+                            details.useTarget "androidx.lifecycle:lifecycle-runtime:2.2.0"
+                        } else {
+                            details.useVersion '2.2.0'
+                        }
+                        details.because 'Compatibilità con Jetifier e React Native 0.60.x'
+                    }
+                }
+
+                // 2) Forza esplicito su artifact chiave per sovrascrivere "strictly" o range
+                rs.force "androidx.lifecycle:lifecycle-runtime:2.2.0"
+                rs.force "androidx.lifecycle:lifecycle-runtime-android:2.2.0"
+                rs.force "androidx.lifecycle:lifecycle-livedata:2.2.0"
+                rs.force "androidx.lifecycle:lifecycle-livedata-core:2.2.0"
+                rs.force "androidx.lifecycle:lifecycle-viewmodel:2.2.0"
+                rs.force "androidx.lifecycle:lifecycle-viewmodel-savedstate:1.0.0"
+                rs.force "androidx.lifecycle:lifecycle-common:2.2.0"
+                rs.force "androidx.lifecycle:lifecycle-common-jvm:2.2.0"
+
+                // 3) Forza alcune AndroidX correlate spesso coinvolte nei conflitti
+                rs.force "androidx.core:core:1.0.2"
+                rs.force "androidx.appcompat:appcompat:1.0.2"
+                rs.force "androidx.annotation:annotation:1.1.0"
+                rs.force "com.google.android.material:material:1.0.0"
+
+                // 4) Copertura addizionale: rimpiazzo mirato in caso di artifact specifici
+                try {
+                    rs.dependencySubstitution {
+                        // Se Gradle supporta dependencySubstitution in questa versione, fai anche questo
+                        substitute module('androidx.lifecycle:lifecycle-runtime-android:2.8.5') with module('androidx.lifecycle:lifecycle-runtime:2.2.0')
+                        substitute module('androidx.lifecycle:lifecycle-common:2.8.5') with module('androidx.lifecycle:lifecycle-common:2.2.0')
+                    }
+                } catch(Exception e) {
+                    // In alcune installazioni Gradle 5.x questa chiamata può non essere supportata;
+                    // è safe ignorare l'eccezione e fare affidamento su eachDependency + force.
+                }
+            } // fine cfg.resolutionStrategy
+        } // fine project.configurations.all
+    } // fine subprojects
+} // fine allprojects
+
+// Ulteriore livello di sicurezza: applica anche sul top-level configurations (copertura globale)
+configurations.all {
+    resolutionStrategy {
+        eachDependency { details ->
+            if (details.requested.group == 'androidx.lifecycle') {
+                if (details.requested.name.contains('runtime-android')) {
+                    details.useTarget "androidx.lifecycle:lifecycle-runtime:2.2.0"
+                } else {
+                    details.useVersion '2.2.0'
+                }
+                details.because 'Compatibilità con Jetifier e React Native 0.60.x'
+            }
+        }
+
+        force "androidx.lifecycle:lifecycle-runtime:2.2.0"
+        force "androidx.lifecycle:lifecycle-runtime-android:2.2.0"
+        force "androidx.lifecycle:lifecycle-livedata:2.2.0"
+        force "androidx.lifecycle:lifecycle-livedata-core:2.2.0"
+        force "androidx.lifecycle:lifecycle-viewmodel:2.2.0"
+        force "androidx.lifecycle:lifecycle-viewmodel-savedstate:1.0.0"
+        force "androidx.lifecycle:lifecycle-common:2.2.0"
+        force "androidx.lifecycle:lifecycle-common-jvm:2.2.0"
+
+        force "androidx.core:core:1.0.2"
+        force "androidx.appcompat:appcompat:1.0.2"
+        force "androidx.annotation:annotation:1.1.0"
+        force "com.google.android.material:material:1.0.0"
+
+        // safety: attempt dependencySubstitution here as well (best-effort)
+        try {
+            dependencySubstitution {
+                substitute module('androidx.lifecycle:lifecycle-runtime-android:2.8.5') with module('androidx.lifecycle:lifecycle-runtime:2.2.0')
+                substitute module('androidx.lifecycle:lifecycle-common:2.8.5') with module('androidx.lifecycle:lifecycle-common:2.2.0')
+            }
+        } catch(Exception e) {
+            // ignore if not supported
+        }
+    }
+}
+
+// Impostazioni di compilazione per ottenere warning utili durante build del codice Java
+gradle.projectsEvaluated {
+    tasks.withType(JavaCompile) {
+        options.compilerArgs << "-Xlint:unchecked" << "-Xlint:deprecation"
+    }
+}

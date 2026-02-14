@@ -1,0 +1,200 @@
+apply plugin: "com.android.application"
+
+import com.android.build.OutputFile
+
+// === DISATTIVA COMPLETAMENTE SENTRY PRIMA DI APPLICARE IL PLUGIN ===
+project.ext.sentryEnabled = false
+
+// === REACT NATIVE CONFIG ===
+project.ext.react = [
+    entryFile: "index.js",
+    enableHermes: false,  // clean and rebuild if changing
+    nodeExecutableAndArgs: ["node", "--max-old-space-size=8192"]
+]
+
+// React Native build logic
+apply from: "../../node_modules/react-native/react.gradle"
+
+// ⚠️ Applica Sentry solo se abilitato
+if (project.ext.sentryEnabled) {
+    apply from: "../../node_modules/@sentry/react-native/sentry.gradle"
+}
+
+// -----------------------------------------------------------------------------
+// Risolution strategy: forza tutte le androidx.lifecycle a versioni compatibili
+// e reindirizza lifecycle-runtime-android verso lifecycle-runtime:2.2.0
+// -----------------------------------------------------------------------------
+configurations.all {
+    resolutionStrategy {
+        // Forza esplicita per coprire i casi "strictly" e range
+        force 'androidx.lifecycle:lifecycle-runtime:2.2.0'
+        force 'androidx.lifecycle:lifecycle-livedata:2.2.0'
+        force 'androidx.lifecycle:lifecycle-livedata-core:2.2.0'
+        force 'androidx.lifecycle:lifecycle-viewmodel:2.2.0'
+        force 'androidx.lifecycle:lifecycle-viewmodel-savedstate:1.0.0'
+        force 'androidx.lifecycle:lifecycle-common:2.2.0'
+        force 'androidx.lifecycle:lifecycle-common-jvm:2.2.0'
+
+        // Forza anche AndroidX correlate che spesso partecipano ai conflitti
+        force 'androidx.core:core:1.0.2'
+        force 'androidx.appcompat:appcompat:1.0.2'
+        force 'androidx.annotation:annotation:1.1.0'
+        force 'com.google.android.material:material:1.0.0'
+
+        eachDependency { details ->
+            if (details.requested.group == 'androidx.lifecycle') {
+                // Se qualcuno richiede runtime-android (introdotto in 2.6+),
+                // reindirizziamo verso lifecycle-runtime:2.2.0 (artifact compatibile)
+                if (details.requested.name.contains("runtime-android")) {
+                    details.useTarget "androidx.lifecycle:lifecycle-runtime:2.2.0"
+                } else {
+                    // Normalizza tutte le altre lifecycle alla 2.2.0
+                    details.useVersion '2.2.0'
+                }
+                details.because 'Compatibilità con Jetifier e React Native 0.60.x'
+            }
+        }
+    }
+}
+
+// -----------------------------------------------------------------------------
+// FINE risolution strategy
+// -----------------------------------------------------------------------------
+
+def enableSeparateBuildPerCPUArchitecture = false
+def enableProguardInReleaseBuilds = false
+def jscFlavor = 'org.webkit:android-jsc:+'
+def enableHermes = project.ext.react.get("enableHermes", false)
+
+android {
+    compileSdkVersion rootProject.ext.compileSdkVersion
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+
+    defaultConfig {
+        applicationId "com.tonchan"
+        minSdkVersion rootProject.ext.minSdkVersion
+        targetSdkVersion rootProject.ext.targetSdkVersion
+        versionCode 123
+        versionName "v1.2.3"
+
+        ndk {
+            abiFilters "armeabi-v7a", "x86", "arm64-v8a", "x86_64"
+            moduleName "TurtleCoin_jni"
+            stl "stlport_static"
+        }
+
+        missingDimensionStrategy 'react-native-camera', 'general'
+        multiDexEnabled true
+    }
+
+    externalNativeBuild {
+        ndkBuild {
+            path "src/main/jni/Android.mk"
+        }
+    }
+
+    signingConfigs {
+        debug {
+            storeFile file('debug.keystore')
+            storePassword 'android'
+            keyAlias 'androiddebugkey'
+            keyPassword 'android'
+        }
+
+        release {
+            storeFile file("/root/mobile/android/app/release-keystore.jks")
+            storePassword "desy2011"
+            keyAlias "release"
+            keyPassword "desy2011"
+        }
+    }
+
+    splits {
+        abi {
+            reset()
+            enable enableSeparateBuildPerCPUArchitecture
+            universalApk true
+            include "armeabi-v7a", "x86", "arm64-v8a", "x86_64"
+        }
+    }
+
+    buildTypes {
+        debug {
+            signingConfig signingConfigs.debug
+        }
+        release {
+            signingConfig signingConfigs.release
+            minifyEnabled enableProguardInReleaseBuilds
+            proguardFiles getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro"
+        }
+    }
+
+    applicationVariants.all { variant ->
+        variant.outputs.each { output ->
+            def versionCodes = ["armeabi-v7a": 1, "x86": 2, "arm64-v8a": 3, "x86_64": 4]
+            def abi = output.getFilter(OutputFile.ABI)
+            if (abi != null) {
+                output.versionCodeOverride =
+                        versionCodes.get(abi) * 1048576 + defaultConfig.versionCode
+            }
+        }
+    }
+
+    packagingOptions {
+        pickFirst '**/armeabi-v7a/libc++_shared.so'
+        pickFirst '**/x86/libc++_shared.so'
+        pickFirst '**/arm64-v8a/libc++_shared.so'
+        pickFirst '**/x86_64/libc++_shared.so'
+        pickFirst '**/x86/libjsc.so'
+        pickFirst '**/armeabi-v7a/libjsc.so'
+    }
+}
+
+dependencies {
+    implementation 'com.github.uccmawei:FingerprintIdentify:1.2.6'
+    implementation project(':react-native-background-fetch')
+    implementation fileTree(dir: "libs", include: ["*.jar"])
+    implementation "com.facebook.react:react-native:+"
+    implementation 'com.google.android.gms:play-services-safetynet:+'
+    implementation 'com.android.support:multidex:2.0.1'
+    implementation "androidx.annotation:annotation:1.6.0" // <-- aggiunta
+
+    // Firebase (consigliato: usa BoM per gestire versioni)
+    implementation platform('com.google.firebase:firebase-bom:32.1.0')
+    implementation 'com.google.firebase:firebase-messaging'
+    implementation 'com.google.firebase:firebase-analytics'
+
+    apply from: "../../node_modules/react-native-vector-icons/fonts.gradle"
+
+    if (enableHermes) {
+        def hermesPath = "../../node_modules/hermesvm/android/"
+        debugImplementation files(hermesPath + "hermes-debug.aar")
+        releaseImplementation files(hermesPath + "hermes-release.aar")
+    } else {
+        implementation jscFlavor
+    }
+}
+
+// === BLOCCA TUTTI I TASK DI SENTRY (ULTERIORE SICUREZZA) ===
+tasks.whenTaskAdded { task ->
+    if (task.name.toLowerCase().contains("sentry")) {
+        task.enabled = false
+    }
+}
+
+// Copia dipendenze (BUCK)
+task copyDownloadableDepsToLibs(type: Copy) {
+    from configurations.compile
+    into 'libs'
+}
+
+// React Native native modules
+apply from: file("../../node_modules/@react-native-community/cli-platform-android/native_modules.gradle")
+applyNativeModulesAppBuildGradle(project)
+
+// Applica Google Services plugin per Firebase (deve essere l'ultimo apply plugin)
+apply plugin: 'com.google.gms.google-services'

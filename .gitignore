@@ -1,0 +1,14 @@
+node_modules
+android/app/build
+android/app/.externalNativeBuild
+android/.gradle
+.idea
+android/build
+ios/sentry.properties
+android/app/my-release-key.keystore
+2_android/
+android/*.hprof
+2_android/
+android/*.hprof
+2_android/
+android/*.hprof
